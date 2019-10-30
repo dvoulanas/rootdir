@@ -2,12 +2,11 @@ function [status,msg,msgID,mk_path_fin]=rootdir(root,dir_lvl,dir_names)
 %This function creates directories relative to specified root directory
 %
 %Inputs:
-% - root: root directory where the directories are to be created 
-% - dir_lvl: level of directory, relative to root directory (row vector)
-% - dir_names: name of each correspoding directory (row vector)
+% - root: root directory where the directories are to be created (char vector)
+% - dir_lvl: level of directory, relative to root directory (string row vector)
+% - dir_names: name of each correspoding directory (string row vector)
 %
 % Outputs:
-% - for all other options (k-nearest points)
 %     1. status -> Folder creation status indicating whether the attempt to
 %          create the folder is successful, returned as 0 or 1. 
 %          If the attempt to create the folder is successful or the folder 
@@ -83,7 +82,6 @@ path_fin=path_temp;
 end
 % %counts times of '\' occurence. Those with the largest number are the
 % %indended paths
-% if
 count_lvl=strfind(path_fin,'\');
 if iscell(count_lvl)
 num_lvls=cellfun('size',count_lvl,2);
@@ -95,8 +93,12 @@ end
 max_lvl=max(max(num_lvls));
 % %The indended paths, relative to root, to be created 
 mk_path=path_fin(num_lvls==max_lvl);
-% %add the root path to the the paths
-mk_path_fin=strcat(root,mk_path);
+% %add the root path to the yielded paths
+if root(end)=='\'
+  mk_path_fin=strcat(root,mk_path);
+else
+  mk_path_fin=strcat(root,"\",mk_path);   
+end
 for i=1:size(mk_path_fin,1)
  [status(i,:),msg_temp,msgID_temp]=mkdir(char(mk_path_fin(i)));
  msg(i,:)=string(msg_temp);
